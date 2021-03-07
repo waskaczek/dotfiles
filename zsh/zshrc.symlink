@@ -1,0 +1,115 @@
+######################################
+#   File: Zshrc file                 #
+#   __    __          _              #
+#  / / /\ \ \__ _ ___| | ___   _     #
+#  \ \/  \/ / _` / __| |/ | | | |    #
+#   \  /\  | (_| \__ |   <| |_| |    #
+#    \/  \/ \__,_|___|_|\_\\__, |    #
+#                          |___/     #
+#   https://github.com/waskaczek     #
+######################################
+
+export DOTFILES=$HOME/.dotfiles_wasky
+export ZSH_DOTFILES=$DOTFILES/zsh
+
+# Path to your oh-my-zsh installation.
+export ZSH=$HOME/.oh-my-zsh
+
+ZSH_THEME="powerlevel9k/powerlevel9k"
+plugins=(
+  git
+  virtualenv
+)
+
+POWERLEVEL9K_MODE='nerdfont-complete'
+
+#----------------------------------------------
+# Left prompt
+#----------------------------------------------
+POWERLEVEL9K_PROMPT_ON_NEWLINE=true
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir_writable dir vcs)
+
+# Dir_writable
+POWERLEVEL9K_LOCK_ICON='\uF023'
+
+# Dir
+POWERLEVEL9K_DIR_WRITABLE_FORBIDDEN_BACKGROUND='cyan'
+POWERLEVEL9K_DIR_WRITABLE_FORBIDDEN_FOREGROUND='red'
+
+POWERLEVEL9K_SHORTEN_DIR_LENGTH=3
+
+# VCS
+POWERLEVEL9K_VCS_GIT_GITHUB_ICON='\uF09B'
+
+POWERLEVEL9K_VCS_CLEAN_FOREGROUND='cyan'
+POWERLEVEL9K_VCS_CLEAN_BACKGROUND='clean'
+
+POWERLEVEL9K_VCS_UNTRACKED_FOREGROUND='white'
+POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND='red'
+
+POWERLEVEL9K_VCS_MODIFIED_FOREGROUND='black'
+POWERLEVEL9K_VCS_MODIFIED_BACKGROUND='yellow'
+
+#----------------------------------------------
+# Right promtp
+#----------------------------------------------
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status context battery virtualenv)
+POWERLEVEL9K_RPROMPT_ON_NEWLINE=true
+
+# Context
+POWERLEVEL9K_CONTEXT_TEMPLATE="%m"
+
+POWERLEVEL9K_CONTEXT_DEFAULT_FOREGROUND='black'
+POWERLEVEL9K_CONTEXT_DEFAULT_BACKGROUND='cyan'
+
+POWERLEVEL9K_CONTEXT_REMOTE_FOREGROUND='black'
+POWERLEVEL9K_CONTEXT_REMOTE_BACKGROUND='green'
+
+# Battery
+POWERLEVEL9K_BATTERY_LOW_BACKGROUND='clean'
+POWERLEVEL9K_BATTERY_LOW_FOREGROUND='red'
+
+POWERLEVEL9K_BATTERY_CHARGING_BACKGROUND='clean'
+POWERLEVEL9K_BATTERY_CHARGING_FOREGROUND='yellow'
+
+POWERLEVEL9K_BATTERY_CHARGED_BACKGROUND='clean'
+POWERLEVEL9K_BATTERY_CHARGED_FOREGROUND='green'
+
+POWERLEVEL9K_BATTERY_DISCONNECTED_BACKGROUND='clean'
+POWERLEVEL9K_BATTERY_DISCONNECTED_FOREGROUND='yellow'
+
+POWERLEVEL9K_BATTERY_LOW_THRESHOLD=15
+
+POWERLEVEL9K_BATTERY_VERBOSE=false
+POWERLEVEL9K_BATTERY_STAGES=($'\uf579 ' $'\uf57a ' $'\uf57b ' $'\uf57c ' $'\uf57d ' $'\uf57e ' $'\uf57f ' $'\uf580 ' $'\uf581 ' $'\uf578')
+
+source $ZSH/oh-my-zsh.sh
+
+# source all .zsh files inside of the zsh/ directory
+for config ($ZSH_DOTFILES/**/*.zsh) source $config
+
+# initialize autocomplete
+autoload -U compinit add-zsh-hook
+compinit
+
+#for config ($ZSH_DOTFILES/**/*completion.sh) source $config
+
+export EDITOR='nvim'
+export GIT_EDITOR='nvim'
+
+export PATH=$PATH:~/bin 
+export PATH=$PATH:~/.local/bin
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+NPM_PACKAGES="$HOME/.npm-packages"
+
+export PATH="$PATH:$NPM_PACKAGES/bin"
+
+# Preserve MANPATH if you already defined it somewhere in your config.
+# Otherwise, fall back to `manpath` so we can inherit from `/etc/manpath`.
+export MANPATH="${MANPATH-$(manpath)}:$NPM_PACKAGES/share/man"
+
+if [[ -n $VIRTUAL_ENV && -e "${VIRTUAL_ENV}/bin/activate" ]]; then
+  source "${VIRTUAL_ENV}/bin/activate"
+fi 
+

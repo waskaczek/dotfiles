@@ -1,0 +1,72 @@
+######################################
+#   File: Git config file            #
+#   __    __          _              #
+#  / / /\ \ \__ _ ___| | ___   _     #
+#  \ \/  \/ / _` / __| |/ | | | |    #
+#   \  /\  | (_| \__ |   <| |_| |    #
+#    \/  \/ \__,_|___|_|\_\\__, |    #
+#                          |___/     #
+#   https://github.com/waskaczek     #
+######################################
+
+[color]
+    ui = auto
+
+[color "decorate"]
+    HEAD = yellow bold blue
+    branch = black cyan
+    remoteBranch = yellow bold magenta
+    tag = cyan bold magenta
+    
+[alias]
+
+    # Base
+    s = status
+
+    # File operations
+    a = add -v
+    aa = add --all
+    add = add -v
+    discard = reset --hard HEAD
+
+    # Branches
+    branches = branch -a
+    c = checkout
+    cb = checkout -b
+
+    # Commits
+    cm = commit -m
+    amend = commit --amend --reuse-message=HEAD
+    sha = rev-parse --verify HEAD
+
+
+    # Logs
+    l = log --graph --decorate --date=short
+    last = log -1 HEAD
+    log-stat = log --stat --abbrev-commit
+    log-full = log --oneline --graph --color --all --decorate
+    h = log --all --graph --decorate --pretty=format:'%C(yellow)%h%Creset -%C(auto)%d%Creset %C(bold white)%s%Creset %C(bold green)(%cr)%Creset %C(cyan)<%an - %aE>%Creset' --abbrev-commit 
+    hr = log --all --graph --decorate --pretty=format:'%C(yellow)%h%Creset -%C(auto)%d%Creset %C(bold white)%s%Creset %C(bold green)(%cr)%Creset %C(cyan)<%an - %aE>%Creset' --abbrev-commit --remotes
+	log-file = log --follow -p --
+
+    # Fetch, pull, push
+    f = fetch
+    fa = fetch --all
+    pl = pull
+    ps = push
+
+    # Diff
+    d = diff
+    dc = diff --cached
+    da = diff HEAD
+    df = diff --stat 
+    # Show
+    s-last = show -1 HEAD
+    s-files = show --stat
+
+    # Stash
+    st = stash
+    st-l = stash list
+    st-a = stash apply
+    st-c = stash clear
+    st-show = stash show -p
