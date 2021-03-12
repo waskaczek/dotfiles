@@ -48,6 +48,9 @@ return require('packer').startup(function()
     -- https://github.com/nvie/vim-flake8
     use {'nvie/vim-flake8'}
 
+    -- C/C++
+    -- https://github.com/bfrg/vim-cpp-modern
+    use {'bfrg/vim-cpp-modern'}
 
     -- GIT
     -- https://github.com/airblade/vim-gitgutter

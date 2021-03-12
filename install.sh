@@ -45,6 +45,7 @@ if [ "$1" == "desktop" ]; then
         tmux-plugin-manager \
         python3-pip \
         unrar \
+	xsel \
         silversearcher-ag \
         ripgrep
 else
@@ -67,6 +68,7 @@ else
         tmux-plugin-manager \
         python3-pip \
         unrar \
+	xsel \
         silversearcher-ag \
         ripgrep
 fi

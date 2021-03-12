@@ -13,10 +13,15 @@
     ui = auto
 
 [color "decorate"]
-    HEAD = yellow bold blue
+    HEAD = white bold red
     branch = black cyan
-    remoteBranch = yellow bold magenta
-    tag = cyan bold magenta
+    remoteBranch = white magenta
+    tag = cyan bold black
+    
+[color "branch"]
+    local = cyan
+    current = bold red
+    remote = magenta
     
 [alias]
 

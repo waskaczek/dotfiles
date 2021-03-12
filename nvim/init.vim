@@ -100,17 +100,27 @@ let g:autopep8_max_line_length=100
 imap <C-BS> <C-W>
 noremap! <C-BS> <C-w>
 noremap! <C-h> <C-w>
+" " Copy to clipboard
+vnoremap  <leader>y  "+y
+nnoremap  <leader>Y  "+yg_
+nnoremap  <leader>y  "+y
+nnoremap  <leader>yy  "+yy
 
+" " Paste from clipboard
+nnoremap <leader>p "+p
+nnoremap <leader>P "+P
+vnoremap <leader>p "+p
+vnoremap <leader>P "+P
 " Copy
-noremap <Leader>y "*y
-noremap <Leader>p "*p
-noremap <Leader>Y "+y
-noremap <Leader>P "+p
-
-vnoremap <leader>y "*y
-vnoremap <leader>p "*p
-vnoremap <leader>Y "+y
-vnoremap <leader>P "+p
+" noremap <Leader>y "*y
+" noremap <Leader>p "*p
+" noremap <Leader>Y "+y
+" noremap <Leader>P "+p
+" 
+" vnoremap <leader>y "*y
+" vnoremap <leader>p "*p
+" vnoremap <leader>Y "+y
+" vnoremap <leader>P "+p
 
 " Buffers / Templates
 autocmd BufNewFile *.puml 0r ~/.config/nvim/templates/plantuml.puml 

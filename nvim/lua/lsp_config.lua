@@ -47,7 +47,10 @@ require'lspconfig'.dockerls.setup{
     on_attach=custom_attach
 }
 
---require'lspconfig'.clangd.setup{on_attach=custom_attach}
+require'lspconfig'.clangd.setup{
+	on_attach=custom_attach
+}
+
 require'lspconfig'.cmake.setup{
     on_attach=custom_attach
 }
