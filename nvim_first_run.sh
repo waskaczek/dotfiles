@@ -13,4 +13,4 @@
 
 source common.sh 2>/dev/null || source "$DIR/common.sh"
 
-nvim +PackerCompile +PackerInstall +PackerSync
+nvim +PackerCompile +PackerInstall +PackerSync +TSInstall all
