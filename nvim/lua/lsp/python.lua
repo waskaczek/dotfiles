@@ -1,12 +1,13 @@
 
-require'lspconfig'.pyls.setup{
-    settings = {
-        pyls = {
-            plugins = {
-                pycodestyle = {
-                    maxLineLength = 120;
-                }
-            }
+require'lspconfig'.pyright.setup {
+    cmd = {"pyright-langserver", "--stdio"},
+	 settings = {
+      python = {
+        analysis = {
+		  typeCheckingMode = true,
+		  autoSearchPaths = true,
+          useLibraryCodeForTypes = true
         }
-    },
+      }
+    }
 }

@@ -85,14 +85,14 @@ nvim_config()
     create_link "$DOTFILES_PATH/nvim/templates" "/home/$USER_NAME/.config/nvim/templates"
 
     log_blue "Installing language servers for nvim"
-    # Python
-    pip3 install 'python-language-server[all]'
     # CMake
     pip3 install cmake-language-server
     # HTML
     npm install -g vscode-html-languageserver-bin
     # JSON
     npm install -g vscode-json-languageserver
+    # Python
+    npm install -g pyright
 }
 
 create_link_to_dotfiles

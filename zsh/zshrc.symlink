@@ -53,7 +53,7 @@ POWERLEVEL9K_VCS_MODIFIED_BACKGROUND='yellow'
 #----------------------------------------------
 # Right promtp
 #----------------------------------------------
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status context battery virtualenv)
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status time context battery virtualenv)
 POWERLEVEL9K_RPROMPT_ON_NEWLINE=true
 
 # Context

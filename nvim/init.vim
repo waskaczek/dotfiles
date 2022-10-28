@@ -17,25 +17,23 @@ let g:pydocstring_doq_path = "~/.local/bin/doq"
 
 lua require("plugins")
 lua require("lsp")
-lua require("lsp.config")
-lua require("lsp.lua-ls")
+lua require("lsp.linter")
 lua require("lsp.clangd")
-lua require("lsp.python")
+" lua require("lsp.python")
 lua require("lsp.html")
 lua require("settings")
 lua require("keymappings")
+ lua require("completion")
 
-lua require("p_nvimtree")
 lua require("colorscheme")
 lua require("p_treesitter")
-lua require("p_barbar")
-lua require("p_galaxyline")
+" lua require("p_galaxyline")
 lua require("p_telescope")
 lua require("p_autopairs")
 
 
 " TODO: Check it
-autocmd BufEnter * lua require'completion'.on_attach()
+" autocmd BufEnter * lua require'completion'.on_attach()
 
 " Use <Tab> and <S-Tab> to navigate through popup menu
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
@@ -69,6 +67,9 @@ set tags=./tags;/
 
 " Autopep8
 let g:autopep8_max_line_length=100
+
+" Pydocstring
+let g:pydocstring_templates_path = '~/.dotfiles_wasky/nvim/templates/pydocstring'
 
 
 " Map Ctrl-Backspace to delete the previous word in insert mode.
