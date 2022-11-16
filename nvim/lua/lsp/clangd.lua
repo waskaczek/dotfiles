@@ -1,3 +1,0 @@
-
-require'lspconfig'.clangd.setup{
-}

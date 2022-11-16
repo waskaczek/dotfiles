@@ -12,6 +12,8 @@
 ###################################################
 #   Binds
 ###################################################
+set -q -g status-utf8 on                  # expect UTF-8 (tmux < 2.2)
+setw -q -g utf8 on
 
 # change binds od split panes
 bind | split-window -h  # vertical pane split using |
@@ -117,8 +119,8 @@ set -g status-style "fg=$color_status_text,bg=$color_dark"
 
 # window segments in status line
 set -g window-status-separator "|"
-status_separator_left="->"
-status_separator_right="<-"
+status_separator_left='\uE0B0'
+status_separator_right='\uE0B2'
 
 setw -g window-status-format " #I:#W "
 setw -g window-status-current-style "fg=$color_light,bold,bg=$color_main"
@@ -210,4 +212,4 @@ set -g @plugin 'tmux-plugins/tmux-urlview'
 set -g @plugin 'tmux-plugins/tmux-yank'
 
 # Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
-run '~/.tmux/plugins/tpm/tpm'
+run '/usr/share/tmux-plugin-manager/tpm'

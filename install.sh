@@ -11,126 +11,293 @@
 #   https://github.com/waskaczek     #
 ######################################
 
+set -e
 source common.sh 2>/dev/null || source "$DIR/common.sh"
 
-if [[ $(id -u) -ne 0 ]]; then
-	log_red "Use as root, with sudo" 
-	exit 1; 
+function usage { 
+    cat <<EOF
+
+Script to install dotfiles on clean machine. Possible install for desktop or only for terminal use (light).
+Also possible is to install development packages for c/c++, python, lua etc. In case if you don't select development flag 
+script install only nvim without lsp configuration and system without development libraries and compilers.
+
+Usage:
+
+Install development configuration on normal desktop with gui
+  ${0##*/} -e <enviroment> -d
+  Example: ${0##*/} -e desktop -d
+
+Install only configuration for console (Raspberry Pi)
+  ${0##*/} -e <enviroment>
+  Example: ${0##*/} -e light    
+
+Options:
+    -h              : print this help and exit
+    -e <enviroment> : enviroment possible value: desktop, light
+    -d              : development
+    -t <tools path> : path to tools: default is $HOME/tools/dotfiles
+EOF
+}
+
+DOTFILES_HOME_PATH=$HOME/.dotfiles_wasky
+DEFAULT_TOOLS_PATH=$HOME/tools/dotfiles
+ARCH=$(uname -m)
+
+unset -v DEV ENV USAGE TOOLS_PATH
+while getopts ":e:dht" opt; do
+    case $opt in
+        e)  ENV="$OPTARG";;
+        d)  DEV=1;;
+        t)  TOOLS_PATH="$OPTARG";;
+        h)  USAGE=1;;
+        *)  USAGE=1;;
+    esac
+done
+shift $((OPTIND -1))
+
+if [ $USAGE ]; then
+  usage
+  exit 0
 fi
 
-log_blue "\nInstalling packages"
-
-#---------------------------------------------------------------
-# Install packages from apt
-#---------------------------------------------------------------
-if [ "$1" == "desktop" ]; then
-    sudo apt install -qq \
-	automake \
-	autotools-dev \
-	pkg-config \
-	clang \
-	clang-tools \
-        cmake \
-        curl \
-        htop \
-        okular \
-        gnome-terminal \
-        fonts-powerline \
-        fonts-font-awesome \
-        zsh \
-        ncurses-dev \
-        libevent-dev \
-        npm \
-        tmux \
-        tmux-plugin-manager \
-        python3-pip \
-        unrar \
-	xsel \
-        silversearcher-ag \
-        ripgrep
-else
-    sudo apt install -qq \
-	automake \
-	autotools-dev \
-	pkg-config \
-	clang \
-	clang-tools \
-        cmake \
-        curl \
-        htop \
-        fonts-powerline \
-        fonts-font-awesome \
-        zsh \
-        ncurses-dev \
-        libevent-dev \
-        npm \
-        tmux \
-        tmux-plugin-manager \
-        python3-pip \
-        unrar \
-	xsel \
-        silversearcher-ag \
-        ripgrep
+if [ -z $ENV ]; then
+    log_error "Missing -e parameter. Run ${0##*/} -h for help"
+    exit 1
 fi
 
+if [ -z $TOOLS_PATH ]; then
+    TOOLS_PATH="$DEFAULT_TOOLS_PATH"
+    log_info "Tools path is set to default:\n  $TOOLS_PATH\n"
+fi
 
-#---------------------------------------------------------------
-# Install ctags
-#---------------------------------------------------------------
-if ! type "ctags" > /dev/null; then
-    if [ ! -d /home/$USER_NAME/tools/ctags ]; then
-	log_blue "Installing ctags"
-	log_gren "Creating folder for ctags [~/tools/ctags]"
-        mkdir -r ~/tools/nvim
-	sudo -u $USER_NAME git clone https://github.com/universal-ctags/ctags.git /home/$USER_NAME/tools/ctags
-	cd /home/$USER_NAME/tools/ctags
-	sudo -u $USER_NAME ./autogen.sh
-	sudo -u $USER_NAME ./configure
-	make
-	make install
+if [ ! -d $TOOLS_PATH ]; then
+    log_info "Creating tools directory: \n $TOOLS_PATH\n"
+    mkdir -p $TOOLS_PATH
+fi
+
+function install_packages_from_apt {
+    #---------------------------------------------------------------
+    # Light version
+    #---------------------------------------------------------------
+    APPS_TO_INSTALL=(
+        curl
+        fonts-powerline
+        fonts-font-awesome
+        fzf
+        git
+        htop
+        network-manager
+        npm
+        python3-networkmanager
+        python3-pip
+        python3-venv
+        sudo
+        tmux
+        tmux-plugin-manager
+        tree
+        unrar
+        zsh
+        )
+
+    if [ $ENV == "desktop" ]; then
+        APPS_TO_INSTALL+=(
+            gnome-terminal
+            okular
+        )
     fi
+
+    if [ $DEV ]; then
+        APPS_TO_INSTALL+=(
+            automake
+            autotools-dev
+            clang-13
+            clangd-13
+            cmake
+            g++
+            gcc
+            gcc-arm-none-eabi
+            pkg-config
+            yarn
+        )
+    fi
+
+    log_step "Install packages from APT"
+    log_info "Update and upgrade packages"
+    sudo apt update -qq
+    sudo apt upgrade -qq --assume-yes
+
+    IFS=$'\n' SORTED_APP=($(sort <<<"${APPS_TO_INSTALL[*]}")); unset IFS
+
+    log_info "Installing followed packages:"
+    for i in "${SORTED_APP[@]}"; do
+        log_info " - $i"
+    done
+
+    sudo apt install -qq --assume-yes ${APPS_TO_INSTALL[@]}
+    sudo apt clean -qq 
+    sudo apt autoremove -qq --assume-yes
+}
+
+function install_development_part {
+
+    if [ $DEV ]; then
+
+        log_step "Install development packages"
+
+        #   CTAGS
+        if ! command -v ctags > /dev/null; then
+            if [ ! -d "$TOOLS_PATH/ctags" ]; then
+                log_info "Creating folder for ctags [$TOOLS_PATH/ctags]"
+                mkdir -p $TOOLS_PATH/ctags
+            fi
+
+            log_info "\nInstalling ctags"
+            git clone https://github.com/universal-ctags/ctags.git $TOOLS_PATH/ctags
+            cd $TOOLS_PATH/ctags
+            ./autogen.sh
+            ./configure
+            make
+            sudo make install
+        else
+            log_info "Ctags already installed"
+        fi
+
+        log_info "Installing tree-sitter-cli"
+        npm install --silent --quiet --g tree-sitter-cli
+    fi
+}
+
+function configure_npm {
+    if [ ! -d "$HOME/.npm-packages" ]; then
+        log_step "Configure npm to use local storage for packages"
+        mkdir -p $HOME/.npm-packages
+        npm config set prefix "$HOME/.npm-packages"
+    fi
+}
+
+function install_zsh {
+    if [ ! -d "$HOME/.oh-my-zsh" ]; then
+        log_step "Installing oh-my-zsh and dependencies"
+
+        sh -c "$(wget -q https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)" "" --unattended
+    else
+        log_info "oh-my-zsh already installed."
+    fi
+
+    if [ ! -d "$HOME/.oh-my-zsh/custom/themes/powerlevel10k" ]; then
+        log_info "Installing powerlevel10k"
+        git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k --quiet
+    else
+        log_info "powerlevel10k already installed"
+    fi
+
+    log_info "Set zsh as default shell."
+    chsh -s $(which zsh)
+
+    create_link "$DOTFILES_PATH/zsh/zshrc.symlink" "$HOME/.zshrc"
+}
+
+function configure_git {
+    log_step "Configure git"
+
+    log_info "Include gitconfig from dotfiles repository to ~/.gitconfig file"
+
+    if [ -f $HOME/.gitconfig ]; then
+        if grep -Fxq "    path = $DIR/git/gitconfig" $HOME/.gitconfig; then
+            log_info "gitconfig already added to $HOME./gitconfig file."
+        else
+            log_info "Added include gitconfig to $HOME./gitconfig file."
+            echo "[include]" >> $HOME/.gitconfig
+            echo "    path = $DIR/git/gitconfig" >> $HOME/.gitconfig
+        fi
+    else
+        log_info "Added include gitconfig to $HOME./gitconfig file."
+        echo "[include]" >> $HOME/.gitconfig
+        echo "    path = $DIR/git/gitconfig" >> $HOME/.gitconfig
+    fi
+
+}
+
+function create_link_to_dotfiles {
+    log_step "Creating link to dotfiles repository."
+    create_link "$DOTFILES_PATH" "$DOTFILES_HOME_PATH"
+}
+
+function configure_tmux {
+    log_step "Installing tmux plugins."
+
+    create_link "$DOTFILES_PATH/tmux/tmux.conf.symlink" "$HOME/.tmux.conf"
+
+    /usr/share/tmux-plugin-manager/bin/install_plugins
+    /usr/share/tmux-plugin-manager/bin/update_plugins all
+}
+
+function configure_nvim {
+
+    log_step "Configure neovim"
+    mkdir -p $HOME/.config/nvim
+
+    if ! command -v nvim > /dev/null; then
+        wget -q -P $TOOLS_PATH https://github.com/neovim/neovim/releases/download/v0.8.0/nvim.appimage
+        sudo chmod +x $TOOLS_PATH/nvim.appimage
+        sudo ln -s "$TOOLS_PATH/nvim.appimage" "/usr/local/bin/nvim"
+    fi
+
+    create_link "$DOTFILES_PATH/nvim/init.lua" "$HOME/.config/nvim/init.lua"
+    create_link "$DOTFILES_PATH/nvim/lua" "$HOME/.config/nvim/lua"
+    create_link "$DOTFILES_PATH/nvim/templates" "$HOME/.config/nvim/templates"
+
+    set +e
+    log_info "Installing plugins and configurations it will take 60 seconds"
+    nvim --headless -E -c 'sleep 20' -c 'qa'
+    nvim --headless -E -c 'PackerCompile' -c 'PackerInstall' -c 'PackerSync' -c 'TSUpdateSync' -c 'sleep 60' -c 'qa'
+    nvim --headless -E -c ':MasonInstall cmakelang cpplint flake8 autopep8 clang-format markdownlint sql-formatter stylua' -c 'qa'
+    set -e
+}
+
+function install_nerd_font {
+    log_step "Installing nerd font - SourceCodePro Regular"
+
+    if [ ! -d $HOME/.fonts ]; then
+        mkdir -p $HOME/.fonts
+    fi
+
+    if [ ! -f "$HOME/.fonts/Sauce Code Pro Nerd Font Complete.ttf" ]; then
+        sudo wget -q -P $HOME/.fonts https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/SourceCodePro/Regular/complete/Sauce%20Code%20Pro%20Nerd%20Font%20Complete.ttf
+        fc-cache
+    else
+        log_info "Font already installed"
+    fi
+}
+
+function configure_gnome_terminal {
+    log_step "Configure gnome terminal"
+    GT_PROFILE=$(gsettings get org.gnome.Terminal.ProfilesList default | awk -F \' '{print $2}')
+
+    log_info "Set solarized dark colors"
+    gsettings set org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:$GT_PROFILE/ use-system-font false
+    gsettings set org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:$GT_PROFILE/ font 'SauceCodePro Nerd Font 10'
+    gsettings set org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:$GT_PROFILE/ foreground-color '#839496'
+    gsettings set org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:$GT_PROFILE/ background-color '#002B36'
+    gsettings set org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:$GT_PROFILE/ bold-color-same-as-fg true
+    gsettings set org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:$GT_PROFILE/ bold-is-bright false
+    gsettings set org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:$GT_PROFILE/ highlight-colors-set false
+}
+
+install_packages_from_apt
+
+configure_npm
+install_development_part
+
+install_nerd_font
+create_link_to_dotfiles
+configure_git
+configure_tmux
+configure_nvim
+install_zsh
+
+if [ $ENV == "desktop" ]; then
+    configure_gnome_terminal
 fi
 
-#---------------------------------------------------------------
-# Configure npm to use local storage for packages
-#---------------------------------------------------------------
-if [ ! -d "/home/$USER_NAME/.npm-packages" ]; then
-    log_blue "\nConfigure npm to use local storage for packages"
-    sudo -u $USER_NAME mkdir -p /home/$USER_NAME/.npm-packages
-    sudo -u $USER_NAME npm config set prefix "/home/$USER_NAME/.npm-packages"
-fi
-
-#---------------------------------------------------------------
-# Install nvim
-#---------------------------------------------------------------
-log_blue "\nInstalling nvim"
-# Create directory for nvim
-if [ ! -d /home/$USER_NAME/tools/nvim ]; then
-    log_green "Creating folder for nvim [~/tools/nvim]"
-    sudo -u $USER_NAME mkdir -p ~/tools/nvim
-fi
-
-# Download nightly nvim install
-if [ ! -f /home/$USER_NAME/tools/nvim/nvim.appImage ]; then
-    sudo -u $USER_NAME wget -O /home/$USER_NAME/tools/nvim/nvim.appImage https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
-    chmod +x /home/$USER_NAME/tools/nvim/nvim.appImage
-else
-    log_yellow "nvim.appImage already exist"
-fi
-
-create_link "/home/$USER_NAME/tools/nvim/nvim.appImage" "/usr/local/bin/nvim"
-sudo -u $USER_NAME pip3 install neovim
-
-#---------------------------------------------------------------
-# Install ZSH
-#---------------------------------------------------------------
-if [ ! -d "/home/$USER_NAME/.oh-my-zsh" ]; then
-    log_blue "\nInstalling oh-my-zsh."
-    # Get zsh
-    sudo -u $USER_NAME sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-
-    log_green "Set zsh as default shell.\n"
-    sudo chsh -s $(which zsh)
-else
-    log_yellow "ZSH already installed.\n"
-fi
+env zsh

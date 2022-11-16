@@ -4,7 +4,7 @@ require'nvim-tree'.setup {
     open_on_setup       = false,
     ignore_ft_on_setup  = {},
     open_on_tab         = false,
-    hijack_cursor       = false,
+    hijack_cursor       = true,
     hijack_directories  = {
         enable = true,
         auto_open = true,
@@ -38,8 +38,7 @@ require'nvim-tree'.setup {
         timeout = 500,
     },
     view = {
-        width = 30,
-        height = 30,
+        width = 40,
         hide_root_folder = false,
         side = 'left',
         mappings = {
