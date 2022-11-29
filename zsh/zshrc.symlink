@@ -112,6 +112,3 @@ export MANPATH="${MANPATH-$(manpath)}:$NPM_PACKAGES/share/man"
 if [[ -n $VIRTUAL_ENV && -e "${VIRTUAL_ENV}/bin/activate" ]]; then
   source "${VIRTUAL_ENV}/bin/activate"
 fi 
-
-
-alias luamake=/home/wasky/Tools/sources/lua-language-server/3rd/luamake/luamake

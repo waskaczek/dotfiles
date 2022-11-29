@@ -58,6 +58,9 @@ return require('packer').startup({function(use)
     use { 'weirongxu/plantuml-previewer.vim' }
     -- Markdown
 
+    -- Common
+    use { 'tyru/open-browser.vim' }
+
     -- Code helpers --
     -- TODO
     use { 'folke/todo-comments.nvim',
@@ -102,7 +105,6 @@ return require('packer').startup({function(use)
     use { 'lewis6991/nvim-treesitter-context',
         config = config_path('treesitter-context')
     }
-
 
     -- UI
     -- Icons etc

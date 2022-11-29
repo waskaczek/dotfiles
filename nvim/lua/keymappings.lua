@@ -5,7 +5,7 @@ local key_modes = {
     normal_mode = 'n',
     insert_mode = 'i',
     visual_mode = 'v',
-           visual_block_mode = 'x',
+    visual_block_mode = 'x',
     command_mode = 'c',
 }
 
@@ -35,6 +35,8 @@ local configuration = {
         -- NvimTree
         ['<C-n>'] = ':NvimTreeToggle<CR>',
         ['<leader>r'] = ':NvimTreeRefresh<CR>',
+        -- SymbolsOutline
+        ['<F8>'] = ':SymbolsOutline<CR>',
     },
     insert_mode = {
         -- Removed arrows
@@ -42,6 +44,10 @@ local configuration = {
         ['<Left>']  = '<Nop>',
         ['<Down>']  = '<Nop>',
         ['<Right>'] = '<Nop>',
+
+        -- Plugins --
+        -- SymbolsOutline
+        ['<F8>'] = ':SymbolsOutline<CR>',
     },
     visual_mode = {
         -- Removed arrows
