@@ -77,7 +77,10 @@ return require('packer').startup({function(use)
         config = config_path('symbols-outline')
     }
     -- Helpers
-    use { 'windwp/nvim-autopairs' }
+    use {
+        'windwp/nvim-autopairs',
+        config = config_path('autopairs')
+    }
     use { 'SmiteshP/nvim-navic',
         requires = 'neovim/nvim-lspconfig',
         config = config_path('nvim-navic')

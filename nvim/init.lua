@@ -14,5 +14,3 @@ require("colorscheme")
 require("plugins")
 require("completion")
 require("lsp")
-
-require("p_autopairs")

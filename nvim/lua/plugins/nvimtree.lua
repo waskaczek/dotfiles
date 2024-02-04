@@ -1,8 +1,12 @@
-require'nvim-tree'.setup {
+local status_ok, tree = pcall(require, 'nvim-tree')
+if not status_ok then
+    error(tree)
+    return
+end
+
+tree.setup {
     disable_netrw       = true,
-    hijack_netrw        = true,
-    open_on_setup       = false,
-    ignore_ft_on_setup  = {},
+    hijack_netrw        = false,
     open_on_tab         = false,
     hijack_cursor       = true,
     hijack_directories  = {
@@ -39,12 +43,7 @@ require'nvim-tree'.setup {
     },
     view = {
         width = 40,
-        hide_root_folder = false,
         side = 'left',
-        mappings = {
-            custom_only = false,
-            list = {}
-        },
         number = false,
         relativenumber = false,
         signcolumn = "yes"

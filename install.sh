@@ -91,11 +91,11 @@ function install_packages_from_apt {
         python3-networkmanager
         python3-pip
         python3-venv
+        ripgrep
         sudo
         tmux
         tmux-plugin-manager
         tree
-        unrar
         zsh
         )
 
@@ -117,6 +117,7 @@ function install_packages_from_apt {
             gcc
             gcc-arm-none-eabi
             pkg-config
+            plantuml
             yarn
         )
     fi
@@ -238,7 +239,7 @@ function configure_nvim {
     mkdir -p $HOME/.config/nvim
 
     if ! command -v nvim > /dev/null; then
-        wget -q -P $TOOLS_PATH https://github.com/neovim/neovim/releases/download/v0.8.0/nvim.appimage
+        wget -q -P $TOOLS_PATH https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
         sudo chmod +x $TOOLS_PATH/nvim.appimage
         sudo ln -s "$TOOLS_PATH/nvim.appimage" "/usr/local/bin/nvim"
     fi
@@ -260,10 +261,11 @@ function install_nerd_font {
 
     if [ ! -d $HOME/.fonts ]; then
         mkdir -p $HOME/.fonts
+        sudo chmod 755 $HOME/.fonts
     fi
 
     if [ ! -f "$HOME/.fonts/Sauce Code Pro Nerd Font Complete.ttf" ]; then
-        sudo wget -q -P $HOME/.fonts https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/SourceCodePro/Regular/complete/Sauce%20Code%20Pro%20Nerd%20Font%20Complete.ttf
+        wget -q -P $HOME/.fonts https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Regular/SauceCodeProNerdFont-Regular.ttf
         fc-cache
     else
         log_info "Font already installed"
@@ -290,7 +292,7 @@ configure_npm
 install_development_part
 
 install_nerd_font
-create_link_to_dotfiles
+create_link_to_dotfiles 
 configure_git
 configure_tmux
 configure_nvim
