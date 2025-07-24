@@ -8,9 +8,14 @@
 -- "                          |___/     "
 -- "   https://github.com/waskaczek     "
 -- """"""""""""""""""""""""""""""""""""""
+require("basics.lazy")
+require("basics.mason")
+require("basics.autocmds")
+
 require("settings")
 require("keymappings")
-require("colorscheme")
-require("plugins")
-require("completion")
 require("lsp")
+--require("colorscheme")
+--require("plugins")
+--require("completion")
+

@@ -1,12 +1,13 @@
-local status_ok, bufferline= pcall(require, 'bufferline')
-if not status_ok then
-    error(bufferline)
-  return
-end
+return {
+    "akinsho/bufferline.nvim",
+    dependencies = "nvim-tree/nvim-web-devicons",
+    config = function()
+        require("bufferline").setup({
+            options = {
+                separator_style = 'slant',
+                diagnostics = 'nvim_lsp',
+            }
+        })
+    end
 
-bufferline.setup{
-    options = {
-        separator_style = 'slant',
-        diagnostics = 'nvim_lsp',
-    }
 }

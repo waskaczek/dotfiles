@@ -10,7 +10,10 @@
 # Dotfiles
 Dotfiles are prepared for Debian based distributions.
 
-Tested with Debian 11 bullseye.
+Tested with Debian 12.
+
+## Requirements
+### Neovim >= 0.11
 
 ## Installation
 Installation of dotfiles is possible for 2 types of enviroments:

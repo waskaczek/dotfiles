@@ -246,14 +246,9 @@ function configure_nvim {
 
     create_link "$DOTFILES_PATH/nvim/init.lua" "$HOME/.config/nvim/init.lua"
     create_link "$DOTFILES_PATH/nvim/lua" "$HOME/.config/nvim/lua"
+    create_link "$DOTFILES_PATH/nvim/lsp" "$HOME/.config/nvim/lsp"
     create_link "$DOTFILES_PATH/nvim/templates" "$HOME/.config/nvim/templates"
 
-    set +e
-    log_info "Installing plugins and configurations it will take 60 seconds"
-    nvim --headless -E -c 'sleep 20' -c 'qa'
-    nvim --headless -E -c 'PackerCompile' -c 'PackerInstall' -c 'PackerSync' -c 'TSUpdateSync' -c 'sleep 60' -c 'qa'
-    nvim --headless -E -c ':MasonInstall cmakelang cpplint flake8 autopep8 clang-format markdownlint sql-formatter stylua' -c 'qa'
-    set -e
 }
 
 function install_nerd_font {

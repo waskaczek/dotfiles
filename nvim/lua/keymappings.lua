@@ -32,11 +32,13 @@ local configuration = {
         ['<leader>fg'] =  '<cmd>lua require("telescope.builtin").live_grep()<CR>',
         ['<leader>fb'] =  '<cmd>lua require("telescope.builtin").buffers()<CR>',
         ['<leader>fh'] =  '<cmd>lua require("telescope.builtin").help_tags()<CR>',
+
         -- NvimTree
         ['<C-n>'] = ':NvimTreeToggle<CR>',
         ['<leader>r'] = ':NvimTreeRefresh<CR>',
-        -- SymbolsOutline
-        ['<F8>'] = ':SymbolsOutline<CR>',
+
+        -- Aerial
+        ['<F8>'] = ':AerialToggle<CR>',
     },
     insert_mode = {
         -- Removed arrows
@@ -48,6 +50,9 @@ local configuration = {
         -- Plugins --
         -- SymbolsOutline
         ['<F8>'] = ':SymbolsOutline<CR>',
+
+        -- ["<Tab>"] = 'pumvisible() ? "\\<C-n>" : "\\<C-j>"',
+        -- ["<S-Tab>"] = 'pumvisible() ? "\\<C-p>" : "\\<C-k>"',
     },
     visual_mode = {
         -- Removed arrows
@@ -70,8 +75,8 @@ local configuration = {
         ['J'] = ':move \'>+1<CR>gv-gv',
     },
     command_mode = {
-        ["<C-j>"] = 'pumvisible() ? "\\<C-n>" : "\\<C-j>"',
-        ["<C-k>"] = 'pumvisible() ? "\\<C-p>" : "\\<C-k>"',
+        --["<Tab>"] = 'pumvisible() ? "\\<C-n>" : "\\<C-j>"',
+        --["<S-Tab>"] = 'pumvisible() ? "\\<C-p>" : "\\<C-k>"',
     },
 }
 
@@ -86,3 +91,5 @@ for i, value in pairs(key_modes) do
         end
     end
 end
+
+
