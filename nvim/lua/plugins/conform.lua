@@ -51,6 +51,9 @@ return {
             clang_format = {
                 prepend_args = { '--style=file' },
             },
+            prettier = {
+                prepend_args = { '--print-width=120' },
+            }
         },
         default_format_opts = {
             lsp_format = "fallback",

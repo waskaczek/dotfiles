@@ -37,6 +37,11 @@ return {
                 "gomod",
                 "gowork",
                 "gosum",
+                "markdown",
+                "markdown_inline",
+                "latex",
+                "typst",
+                "yaml",
             },
             incremental_selection = {
                 enable = true,

@@ -50,4 +50,21 @@ return {
 		dependencies = { "nvim-lua/plenary.nvim" },
 		opts = {},
 	},
+
+    -- Markview
+	{
+		"OXY2DEV/markview.nvim",
+		lazy = false,
+
+		config = function()
+			require("markview").setup({
+                preview = {
+                    icon_provider = "devicons"
+                }
+            })
+		end,
+
+		-- Completion for `blink.cmp`
+		-- dependencies = { "saghen/blink.cmp" },
+	},
 }

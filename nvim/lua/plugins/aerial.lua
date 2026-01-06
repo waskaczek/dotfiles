@@ -11,6 +11,7 @@ return {
 			layout = {
 				default_direction = "right",
 			},
+			backends = { "treesitter", "lsp", "markdown", "asciidoc", "man" },
 			filter_kind = {
 				"Array",
 				"Boolean",

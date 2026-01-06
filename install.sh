@@ -180,7 +180,7 @@ function install_zsh {
     if [ ! -d "$HOME/.oh-my-zsh" ]; then
         log_step "Installing oh-my-zsh and dependencies"
 
-        sh -c "$(wget -q https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)" "" --unattended
+        sh -c "$(wget -q https://github.com/ohmyzsh/ohmyzsh/blob/2daffdf101f21575f7904d92b29c16bcb448aa10/tools/install.sh -O -)" "" --unattended
     else
         log_info "oh-my-zsh already installed."
     fi
@@ -260,7 +260,7 @@ function install_nerd_font {
     fi
 
     if [ ! -f "$HOME/.fonts/Sauce Code Pro Nerd Font Complete.ttf" ]; then
-        wget -q -P $HOME/.fonts https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Regular/SauceCodeProNerdFont-Regular.ttf
+        wget -q -P $HOME/.fonts https://github.com/ryanoasis/nerd-fonts/blob/a861c72656f180f9061af5d46dd705620194d311/patched-fonts/SourceCodePro/SauceCodeProNerdFont-Regular.ttf
         fc-cache
     else
         log_info "Font already installed"

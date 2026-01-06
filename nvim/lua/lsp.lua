@@ -1,7 +1,9 @@
 vim.lsp.enable({
+    "bashls",
     "clangd",
     "lua_ls",
-    "html-ls"
+    "html-ls",
+    "pylsp"
 })
 
 vim.diagnostic.config({
@@ -29,3 +31,4 @@ vim.diagnostic.config({
         },
     },
 })
+
